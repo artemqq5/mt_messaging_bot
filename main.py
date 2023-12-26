@@ -16,8 +16,8 @@ bot = Bot(token=BOT_TOKEN_ID, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
 
 
-@dp.message_handler(commands=['start'])
-async def welcome(message: types.Message, state='*'):
+@dp.message_handler(commands=['start'], state='*')
+async def welcome(message: types.Message, state: FSMContext):
     # cancel state if not None
     current_state = await state.get_state()
     if current_state is not None:
