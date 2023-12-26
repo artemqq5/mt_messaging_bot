@@ -1,9 +1,11 @@
+from aiogram.types import ReplyKeyboardRemove
+
 from database import MyDataBase
 
 
-async def spam_all_groups(data, message):
+async def spam_all_groups(data, message, chat_type=None):
     try:
-        chats = MyDataBase().all_chats()
+        chats = MyDataBase().all_chats() if chat_type is None else MyDataBase().chat_by_type(chat_type)
         counter = 0
         for chat in chats:
             try:
@@ -15,6 +17,9 @@ async def spam_all_groups(data, message):
                 counter += 1
             except Exception as e:
                 print(f"spam_all_groups: {e}")
-        await message.answer("Сповіщення отримали {0} груп з {1}".format(counter, len(chats)))
+        await message.answer(
+            "Сповіщення отримали {0} груп з {1}".format(counter, len(chats)),
+            reply_markup=ReplyKeyboardRemove()
+        )
     except Exception as e:
         print(f"spam_all_groups: {e}")

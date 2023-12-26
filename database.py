@@ -1,6 +1,6 @@
 import pymysql
 
-from cfg import DB_PASSWORD
+from config.cfg import DB_PASSWORD
 
 
 class MyDataBase:
@@ -45,6 +45,17 @@ class MyDataBase:
                     cursor.execute(_command)
                 return cursor.fetchall()
         except Exception as e:
-            print(f"is_admin: {e}")
+            print(f"all_chats: {e}")
+            return None
+
+    def chat_by_type(self, chat_type):
+        try:
+            with self.connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "SELECT * FROM `chats` WHERE `type` = %s;"
+                    cursor.execute(_command, chat_type)
+                return cursor.fetchall()
+        except Exception as e:
+            print(f"chat_by_type: {e}")
             return None
 
