@@ -114,7 +114,7 @@ async def set_message(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(content_types=['photo', 'text'], state=StateMessage.photo)
-async def set_message(message: types.Message, state: FSMContext):
+async def set_photo(message: types.Message, state: FSMContext):
     if message.text == "Пропустити":
         await StateMessage.check.set()
         data = await state.get_data()
@@ -136,7 +136,7 @@ async def set_message(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(state=StateMessage.check)
-async def set_message(message: types.Message, state: FSMContext):
+async def send_message(message: types.Message, state: FSMContext):
     if message.text == "Відправити":
         data = await state.get_data()
         await state.finish()
