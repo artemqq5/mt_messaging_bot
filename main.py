@@ -106,7 +106,7 @@ async def set_category(message: types.Message, state: FSMContext):
         await StateMessage().message.set()
         await message.answer(
             "Введіть свій текст для розсилки: ",
-            reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton("Пропустити")]], resize_keyboard=True)
+            reply_markup=ReplyKeyboardRemove()
         )
     else:
         await state.reset_state()
