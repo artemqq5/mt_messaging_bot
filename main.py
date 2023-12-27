@@ -8,6 +8,7 @@ from config.cfg import BOT_TOKEN_ID
 from database import MyDataBase
 from keyboard.chat_ import chat_type_category
 from notify.message_spam import spam_all_groups
+from notify.send_back_check import send_back_check
 from repository.chat_rep import ChatRep
 # from notify.message_spam import spam_all_groups
 from role.accesses import access_admin_to_chat, TypeOfChats
@@ -122,29 +123,42 @@ async def set_message(message: types.Message, state: FSMContext):
     await state.update_data(message=message.text)
     await StateMessage.photo.set()
     await message.answer(
-        "Відправте фото (саме формат фото, а не файл), якщо потрібно",
+        "Відправте фото, відео фбо гіфку (формат з стисненням, а не файл), якщо потрібно",
         reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton("Пропустити")]], resize_keyboard=True)
     )
 
 
-@dp.message_handler(content_types=['photo', 'text'], state=StateMessage.photo)
+@dp.message_handler(content_types=['photo', 'animation', 'video', 'text'], state=StateMessage.photo)
 async def set_photo(message: types.Message, state: FSMContext):
-    if message.text == "Пропустити":
+    if message.content_type == 'text' and message.text == "Пропустити":
         await StateMessage.check.set()
         data = await state.get_data()
-        await message.answer(
-            data['message'],
-            reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton("Відправити")]], resize_keyboard=True)
-        )
-    elif message.photo.__len__() > 0:
+
+        await send_back_check(message, data)
+
+    elif message.content_type == 'photo':
         await StateMessage.check.set()
+        await state.update_data(type_sub_data='photo')
         await state.update_data(photo=message.photo[-1].file_id)
         data = await state.get_data()
-        await message.answer_photo(
-            data['photo'],
-            caption=data['message'],
-            reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton("Відправити")]], resize_keyboard=True)
-        )
+
+        await send_back_check(message, data)
+
+    elif message.content_type == 'animation':
+        await StateMessage.check.set()
+        await state.update_data(type_sub_data='gif')
+        await state.update_data(gif=message.document.file_id)
+        data = await state.get_data()
+
+        await send_back_check(message, data)
+
+    elif message.content_type == 'video':
+        await StateMessage.check.set()
+        await state.update_data(type_sub_data='video')
+        await state.update_data(video=message.video.file_id)
+        data = await state.get_data()
+
+        await send_back_check(message, data)
     else:
         await message.answer("Некоректний ввід")
 

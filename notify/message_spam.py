@@ -11,6 +11,10 @@ async def spam_all_groups(data, message, chat_type=None):
             try:
                 if data.get('photo', None) is not None:
                     await message.bot.send_photo(chat_id=chat['group_id'], photo=data['photo'], caption=data['message'])
+                elif data.get('video', None) is not None:
+                    await message.bot.send_video(chat_id=chat['group_id'], video=data['video'], caption=data['message'])
+                elif data.get('gif', None) is not None:
+                    await message.bot.send_document(chat_id=chat['group_id'], document=data['gif'], caption=data['message'])
                 else:
                     await message.bot.send_message(chat_id=chat['group_id'], text=data['message'])
 
