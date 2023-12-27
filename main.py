@@ -87,8 +87,12 @@ async def add(message: types.Message):
         await message.answer("Зареєструйся спочатку", reply_markup=ReplyKeyboardRemove())
 
 
-@dp.message_handler(commands=['messaging'])
-async def send_messeging_to_all(message: types.Message):
+@dp.message_handler(commands=['messaging'], state='*')
+async def send_messeging_to_all(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is not None:
+        await state.reset_state()
+
     if message.chat.type in [types.ChatType.PRIVATE, ]:
         admin = MyDataBase()._is_admin(message.chat.id)
         if admin is not None:
