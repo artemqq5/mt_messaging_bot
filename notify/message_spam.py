@@ -5,7 +5,7 @@ from database import MyDataBase
 
 async def spam_all_groups(data, message, chat_type=None):
     try:
-        chats = MyDataBase().all_chats() if chat_type is None else MyDataBase().chat_by_type(chat_type)
+        chats = MyDataBase()._all_chats() if chat_type is None else MyDataBase()._chat_by_type(chat_type)
         counter = 0
         for chat in chats:
             try:

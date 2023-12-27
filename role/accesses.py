@@ -11,37 +11,39 @@ class TypeOfAdmins(Enum):
 
 
 class TypeOfChats(Enum):
-    AGENCY = "AGENCY"
-    APPS = "APPS"
-    GOOGLE = "GOOGLE"
-    FB = "FB"
-    CONSOLE = "CONSOLE"
-    CREO = "CREO"
-    PP = "PP"
+    AGENCY = "agency"
+    APPS = "apps"
+    GOOGLE = "google"
+    FB = "fb"
+    CONSOLE = "console"
+    CREO = "creo"
+    PP_WEB = "pp_web"
+    PP_ADS = "pp_ads"
 
 
 access_admin_to_chat = {
-    TypeOfAdmins.ADMIN.name: [
-        TypeOfChats.AGENCY.name,
-        TypeOfChats.APPS.name,
-        TypeOfChats.GOOGLE.name,
-        TypeOfChats.FB.name,
-        TypeOfChats.CONSOLE.name,
-        TypeOfChats.CREO.name,
-        TypeOfChats.PP.name
+    TypeOfAdmins.ADMIN.value: [
+        TypeOfChats.AGENCY.value,
+        TypeOfChats.APPS.value,
+        TypeOfChats.GOOGLE.value,
+        TypeOfChats.FB.value,
+        TypeOfChats.CONSOLE.value,
+        TypeOfChats.CREO.value,
+        TypeOfChats.PP_WEB.value,
+        TypeOfChats.PP_ADS.value,
     ],
 
-    TypeOfAdmins.ADMIN_AGENCY.name: [TypeOfChats.AGENCY.name],
+    TypeOfAdmins.ADMIN_AGENCY.value: [TypeOfChats.AGENCY.value],
 
-    TypeOfAdmins.ADMIN_APPS.name: [TypeOfChats.APPS.name],
+    TypeOfAdmins.ADMIN_APPS.value: [TypeOfChats.APPS.value],
 
-    TypeOfAdmins.ADMIN_ACCOUNTS.name: [
-        TypeOfChats.GOOGLE.name,
-        TypeOfChats.FB.name,
-        TypeOfChats.CONSOLE.name
+    TypeOfAdmins.ADMIN_ACCOUNTS.value: [
+        TypeOfChats.GOOGLE.value,
+        TypeOfChats.FB.value,
+        TypeOfChats.CONSOLE.value
     ],
 
-    TypeOfAdmins.ADMIN_CREO.name: [TypeOfChats.CREO.name],
+    TypeOfAdmins.ADMIN_CREO.value: [TypeOfChats.CREO.value],
 
-    TypeOfAdmins.ADMIN_PP.name: [TypeOfChats.PP.name]
+    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.PP_WEB.value, TypeOfChats.PP_ADS.value]
 }
