@@ -21,7 +21,6 @@ dp = Dispatcher(bot, storage=storage)
 
 @dp.message_handler(commands=['start'], state='*')
 async def welcome(message: types.Message, state: FSMContext):
-    # cancel state if not None
     # commands = [
     #     BotCommand(command="start", description="Запустити бота"),
     #     BotCommand(command="messaging", description="Розсилка"),
@@ -33,9 +32,12 @@ async def welcome(message: types.Message, state: FSMContext):
     #     BotCommand(command="add_creo", description="add creo chat"),
     #     BotCommand(command="add_pp_web", description="add pp web chat"),
     #     BotCommand(command="add_pp_ads", description="add pp ads chat"),
+    #     BotCommand(command="add_media", description="add media chat"),
     #     # Add more commands as needed
     # ]
     # await bot.set_my_commands(commands)
+
+    # cancel state if not None
     current_state = await state.get_state()
     if current_state is not None:
         await state.reset_state()
@@ -54,7 +56,7 @@ async def welcome(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands=['add_agency', 'add_apps', 'add_google', 'add_fb', 'add_console', 'add_creo', 'add_pp_web',
-                              'add_pp_ads'])
+                              'add_pp_ads', 'add_media'])
 async def add(message: types.Message):
     if MyDataBase()._is_admin(message['from']['id']) is not None:
         if message.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP]:
@@ -83,6 +85,8 @@ async def add(message: types.Message):
                 await ChatRep().update_pp_web(message, available)
             elif message.text.startswith("/add_pp_ads"):
                 await ChatRep().update_pp_ads(message, available)
+            elif message.text.startswith("/add_media"):
+                await ChatRep().update_media(message, available)
 
     else:
         await message.answer("Зареєструйся спочатку", reply_markup=ReplyKeyboardRemove())
@@ -106,7 +110,7 @@ async def send_messeging_to_all(message: types.Message, state: FSMContext):
 @dp.message_handler(state=StateMessage.category)
 async def set_category(message: types.Message, state: FSMContext):
     admin = MyDataBase()._is_admin(message.chat.id)
-    if admin is None or message.text in access_admin_to_chat[admin['role']]:
+    if admin is not None and message.text in access_admin_to_chat[admin['role']]:
         await state.update_data(category=message.text)
         await StateMessage().message.set()
         await message.answer(
@@ -176,16 +180,3 @@ async def send_message(message: types.Message, state: FSMContext):
 if __name__ == '__main__':
     executor.start_polling(dispatcher=dp, skip_updates=True)
 
-# commands = [
-#     BotCommand(command="start", description="Запустити бота"),
-#     BotCommand(command="messaging", description="Розсилка"),
-#     BotCommand(command="add_agency", description="add agency chat"),
-#     BotCommand(command="add_apps", description="add apps chat"),
-#     BotCommand(command="add_google", description="add google chat"),
-#     BotCommand(command="add_fb", description="add fb chat"),
-#     BotCommand(command="add_console", description="add console chat"),
-#     BotCommand(command="add_creo", description="add creo chat"),
-#     BotCommand(command="add_pp", description="add pp chat"),
-#     # Add more commands as needed
-# ]
-# await bot.set_my_commands(commands)

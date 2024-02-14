@@ -50,3 +50,8 @@ class ChatRep(MyDataBase):
         if result:
             await message.answer(f"Статус оновленно на {available}", reply_markup=ReplyKeyboardRemove())
 
+    async def update_media(self, message, available):
+        result = self._update_chat_media(message.chat.id, available)
+        if result:
+            await message.answer(f"Статус оновленно на {available}", reply_markup=ReplyKeyboardRemove())
+

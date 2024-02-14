@@ -8,6 +8,7 @@ class TypeOfAdmins(Enum):
     ADMIN_ACCOUNTS = "ADMIN_ACCOUNT"
     ADMIN_CREO = "ADMIN_CREO"
     ADMIN_PP = "ADMIN_PP"
+    ADMIN_MEDIA = "ADMIN_MEDIA"
 
 
 class TypeOfChats(Enum):
@@ -19,6 +20,7 @@ class TypeOfChats(Enum):
     CREO = "creo"
     PP_WEB = "pp_web"
     PP_ADS = "pp_ads"
+    MEDIA = "media"
 
 
 access_admin_to_chat = {
@@ -31,6 +33,7 @@ access_admin_to_chat = {
         TypeOfChats.CREO.value,
         TypeOfChats.PP_WEB.value,
         TypeOfChats.PP_ADS.value,
+        TypeOfChats.MEDIA.value,
     ],
 
     TypeOfAdmins.ADMIN_AGENCY.value: [TypeOfChats.AGENCY.value],
@@ -45,5 +48,7 @@ access_admin_to_chat = {
 
     TypeOfAdmins.ADMIN_CREO.value: [TypeOfChats.CREO.value],
 
-    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.PP_WEB.value, TypeOfChats.PP_ADS.value]
+    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.PP_WEB.value, TypeOfChats.PP_ADS.value],
+
+    TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA.value]
 }
