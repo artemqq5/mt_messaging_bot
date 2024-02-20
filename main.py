@@ -21,25 +21,6 @@ storage = MemoryStorage()
 bot = Bot(token=BOT_TOKEN_ID, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
 
-irsugh = [
-    '-1002024787425.',
-    '-1002089085884.',
-    '-1002138034963.',
-    '-1002087048058.',
-    '-1002019825257.',
-    '-1002067891926.',
-    '-1002031474560.',
-    '-1002040129845.',
-    '-1001994958214.',
-    '-1002132410818.',
-    '-1002071945865.',
-    '-1002029457761.',
-    '-1002109611669.',
-    '-1002023122108.',
-    '-1001871363656.',
-    '-1002061806351.'
-]
-
 # @dp.message_handler(lambda m: m.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP], state='*')
 # async def all_message_handler(message: types.Message):
 #     print(message['from']['first_name'])
@@ -47,10 +28,6 @@ irsugh = [
 #     print(message['from']['id'])
 #     print(message['date'])
 
-@dp.message_handler(lambda m: m.text == "g9ioag", state='*')
-async def all_message_handler(message: types.Message):
-    for i in irsugh:
-        await message.bot.send_message(chat_id=i, text='''<a href="https://t.me/masons_shop_bot">BOT</a>\n<a href="https://t.me/MT_SHOP_Supportt">SHOP Support</a>\n<a href="https://t.me/agency_mt">Agency Support</a>''')
 
 @dp.message_handler(commands=['start'], state='*')
 async def welcome(message: types.Message, state: FSMContext):

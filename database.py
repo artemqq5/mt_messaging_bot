@@ -167,5 +167,15 @@ class MyDataBase:
             print(f"_update_chat_media: {e}")
             return None
 
-
+    def _update_group_id(self, old_group_id, new_group_id):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "UPDATE `chats` SET `group_id` = %s WHERE `group_id` = %s;"
+                    cursor.execute(_command, (new_group_id, old_group_id))
+                connection.commit()
+                return True
+        except Exception as e:
+            print(f"_update_group_id: {e}")
+            return None
 

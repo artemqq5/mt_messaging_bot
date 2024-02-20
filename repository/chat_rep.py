@@ -54,3 +54,6 @@ class ChatRep(MyDataBase):
         result = self._update_chat_media(message.chat.id, available)
         if result:
             await message.answer(f"Статус оновленно на {available}", reply_markup=ReplyKeyboardRemove())
+
+    def update_group_id(self, old_group_id, new_group_id):
+        return self._update_group_id(old_group_id, new_group_id)
