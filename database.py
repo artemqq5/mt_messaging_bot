@@ -25,12 +25,12 @@ class MyDataBase:
             print(f"_is_admin: {e}")
             return None
 
-    def _add_chat(self, group_id, title):
+    def _add_chat(self, group_id, title, datetime):
         try:
             with self.__connection as connection:
                 with connection.cursor() as cursor:
-                    _command = "INSERT INTO `chats` (`group_id`, `title`) VALUES (%s, %s);"
-                    cursor.execute(_command, (group_id, title))
+                    _command = "INSERT INTO `chats` (`group_id`, `title`, `time`) VALUES (%s, %s, %s);"
+                    cursor.execute(_command, (group_id, title, datetime))
                 connection.commit()
                 return True
         except Exception as e:
@@ -166,5 +166,6 @@ class MyDataBase:
         except Exception as e:
             print(f"_update_chat_media: {e}")
             return None
+
 
 

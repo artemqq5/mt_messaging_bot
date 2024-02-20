@@ -3,8 +3,8 @@ from database import MyDataBase
 
 
 class ChatRep(MyDataBase):
-    async def add_chat(self, message, title):
-        result = self._add_chat(message.chat.id, title)
+    async def add_chat(self, message, title, datetime):
+        result = self._add_chat(message.chat.id, title, datetime)
         if result is not None:
             await message.answer("Група щойно була додана", reply_markup=ReplyKeyboardRemove())
         else:
@@ -54,4 +54,3 @@ class ChatRep(MyDataBase):
         result = self._update_chat_media(message.chat.id, available)
         if result:
             await message.answer(f"Статус оновленно на {available}", reply_markup=ReplyKeyboardRemove())
-
