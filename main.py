@@ -16,7 +16,6 @@ from repository.chat_rep import ChatRep
 # from notify.message_spam import spam_all_groups
 from role.accesses import access_admin_to_chat, TypeOfChats
 from states.state_message import StateMessage
-from states.state_show_chats import StateShowChats
 
 storage = MemoryStorage()
 bot = Bot(token=BOT_TOKEN_ID, parse_mode=ParseMode.HTML)
