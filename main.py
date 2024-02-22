@@ -8,13 +8,14 @@ from aiogram.utils import executor
 
 from config.cfg import BOT_TOKEN_ID
 from database import MyDataBase
+from features.bot_check_chats import check_bot_membership
 from handlers.message_send_handler import register_message_send_handler
 from keyboard.chat_ import chat_type_category
 from notify.message_spam import spam_all_groups
 from notify.send_back_check import send_back_check
 from repository.chat_rep import ChatRep
 # from notify.message_spam import spam_all_groups
-from role.accesses import access_admin_to_chat, TypeOfChats
+from role.accesses import access_admin_to_chat, TypeOfChats, TypeOfAdmins
 from states.state_message import StateMessage
 
 storage = MemoryStorage()
@@ -34,6 +35,7 @@ async def welcome(message: types.Message, state: FSMContext):
     # commands = [
     #     BotCommand(command="start", description="Запустити бота"),
     #     BotCommand(command="messaging", description="Розсилка"),
+    #     BotCommand(command="check_chats", description="Перевірка чатів"),
     #     BotCommand(command="add_agency", description="add agency chat"),
     #     BotCommand(command="add_apps", description="add apps chat"),
     #     BotCommand(command="add_google", description="add google chat"),
@@ -54,7 +56,8 @@ async def welcome(message: types.Message, state: FSMContext):
         await message.answer("Операцію було скасовано", reply_markup=ReplyKeyboardRemove())
     else:
         if message.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP]:
-            await ChatRep().add_chat(message, message.chat.title, datetime.datetime.now())  # add group to db
+            invite_link = await bot.get_chat(message.chat.id)
+            await ChatRep().add_chat(message, message.chat.title, datetime.datetime.now(), invite_link['invite_link'])  # add group to db
         elif message.chat.type in [types.ChatType.PRIVATE, ]:
             if MyDataBase()._is_admin(message['from']['id']) is not None:
                 await message.answer("<b>Привіт, це бот для розсилки сповіщень</b>\n\n"
@@ -99,6 +102,20 @@ async def add(message: types.Message):
                 await ChatRep().update_media(message, available)
     else:
         await message.answer("Зареєструйся спочатку", reply_markup=ReplyKeyboardRemove())
+
+
+@dp.message_handler(commands=['check_chats'], state='*')
+async def send_messeging_to_all(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is not None:
+        await state.reset_state()
+
+    if message.chat.type in [types.ChatType.PRIVATE, ]:
+        admin = MyDataBase()._is_admin(message.chat.id)
+        if admin is not None and admin['role'] == TypeOfAdmins.ADMIN.value:
+            await check_bot_membership(bot, message.chat.id)
+        else:
+            await message.answer("Відмовлено в доступі", reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands=['messaging'], state='*')
