@@ -19,7 +19,7 @@ async def check_bot_membership(bot, chat_id):
                                                                                       link['invite_link']):
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nОновлено лінку на групу\n\n"
                 else:
-                    results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\n Не вийшло оновити лінку на групу (скоріше ща все бот не доданий як адмін)\n\n"
+                    results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\n Не вийшло оновити лінку на групу (скоріше за все бот не доданий як адмін)\n\n"
         except ChatNotFound as e:
             print(f"check_bot_membership: {chat['group_id']} | {chat['title']}\nГрупа не знайдена\n\n {e}")
             results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nГрупа не знайдена\n\n"
