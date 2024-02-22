@@ -37,6 +37,29 @@ class MyDataBase:
             print(f"_add_chat: {e}")
             return None
 
+    def _get_chat(self, group_id):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "SELECT * FROM `chats` WHERE `group_id` = %s;"
+                    cursor.execute(_command, group_id)
+                return True
+        except Exception as e:
+            print(f"_get_chat: {e}")
+            return None
+
+    def _remove_chat(self, group_id):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "DELETE FROM `chats` WHERE `group_id` = %s;"
+                    cursor.execute(_command, group_id)
+                connection.commit()
+                return True
+        except Exception as e:
+            print(f"_remove_chat: {e}")
+            return None
+
     def _update_chat_link(self, group_id, link):
         try:
             with self.__connection as connection:

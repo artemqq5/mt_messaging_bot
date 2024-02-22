@@ -15,7 +15,8 @@ async def check_bot_membership(bot, chat_id):
 
             if chat['link'] is None:
                 link = await bot.get_chat(chat['group_id'])
-                if link['invite_link'] is not None and MyDataBase()._update_chat_link(chat['group_id'], link['invite_link']):
+                if link['invite_link'] is not None and MyDataBase()._update_chat_link(chat['group_id'],
+                                                                                      link['invite_link']):
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nОновлено лінку на групу\n\n"
                 else:
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\n Не вийшло оновити лінку на групу (скоріше ща все бот не доданий як адмін)\n\n"
@@ -28,14 +29,25 @@ async def check_bot_membership(bot, chat_id):
                 print(f"check_bot_membership: {e}")
                 updated = ChatRep().update_group_id(old_group_id=chat['group_id'], new_group_id=new_group_id)
                 if updated:
-                    print(f"check_bot_membership: group was updated and send again old({chat['group_id']}), new({new_group_id})")
+                    print(f"check_bot_membership: group was updated old({chat['group_id']}), new({new_group_id})")
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(group was updated): {e}\n\n"
                 else:
-                    print(f"check_bot_membership: group was NOT updated and send again old({chat['group_id']}), new({new_group_id})")
-                    results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(group was NOT updated): {e}\n\n"
+                    if MyDataBase()._get_chat(new_group_id):
+                        if MyDataBase()._remove_chat(chat['group_id']):
+                            print(
+                                f"check_bot_membership: group was updated old({chat['group_id']}), new({new_group_id}), old removed")
+                            results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(group was updated, old removed): {e}\n\n"
+                        else:
+                            print(
+                                f"check_bot_membership: group was NOT updated old({chat['group_id']}), new({new_group_id}), old not removed")
+                            results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(group was NOT updated, old not removed): {e}\n\n"
+                    else:
+                        print(
+                            f"check_bot_membership: group was NOT updated old({chat['group_id']}), new({new_group_id})")
+                        results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(group was NOT updated): {e}\n\n"
+
             else:
                 print(f"check_bot_membership: {chat['group_id']} | {chat['title']}\nСталася помилка\n\n {e}")
                 results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка: {e}\n\n"
 
     await bot.send_message(chat_id=chat_id, text=results)
-
