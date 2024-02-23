@@ -57,3 +57,18 @@ class ChatRep(MyDataBase):
 
     def update_group_id(self, old_group_id, new_group_id):
         return self._update_group_id(old_group_id, new_group_id)
+
+    def all_chats(self):
+        return self._all_chats()
+
+    def chat_by_type(self, chat_type):
+        return self._chat_by_type(chat_type)
+
+    def update_chat_link(self, group_id, link):
+        return self._update_chat_link(group_id, link)
+
+    def remove_chat(self, group_id):
+        return self._remove_chat(group_id)
+
+    def get_chat(self, group_id):
+        return self._get_chat(group_id)

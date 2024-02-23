@@ -1,6 +1,7 @@
 import pymysql
 
 from config.cfg import DB_PASSWORD
+from role.accesses import TypeOfAdmins
 
 
 class MyDataBase:
@@ -23,6 +24,40 @@ class MyDataBase:
                 return cursor.fetchone()
         except Exception as e:
             print(f"_is_admin: {e}")
+            return None
+
+    def _get_admins_all_access(self):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "SELECT * FROM `admins` WHERE `role` = %s;"
+                    cursor.execute(_command, TypeOfAdmins.ADMIN.value)
+                return cursor.fetchall()
+        except Exception as e:
+            print(f"_get_admins_all_access: {e}")
+            return None
+
+    def _is_user(self, user_id):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "SELECT * FROM `users` WHERE `user_id` = %s;"
+                    cursor.execute(_command, user_id)
+                return cursor.fetchone()
+        except Exception as e:
+            print(f"_is_user: {e}")
+            return None
+
+    def _add_user(self, user_id, username, group_id, time, first_name, lang_code, chat_name, link_group):
+        try:
+            with self.__connection as connection:
+                with connection.cursor() as cursor:
+                    _command = "INSERT INTO `users` (`user_id`, `username`, `group_id`, `time`, `first_name`, `language_code`, `title_gruop`, `link_group`) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
+                    cursor.execute(_command, (user_id, username, group_id, time, first_name, lang_code, chat_name, link_group))
+                connection.commit()
+                return True
+        except Exception as e:
+            print(f"_add_user: {e}")
             return None
 
     def _add_chat(self, group_id, title, datetime, link):
@@ -213,4 +248,6 @@ class MyDataBase:
         except Exception as e:
             print(f"_update_group_id: {e}")
             return None
+
+
 

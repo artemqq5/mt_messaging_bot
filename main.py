@@ -7,13 +7,14 @@ from aiogram.types import ParseMode, ReplyKeyboardMarkup, KeyboardButton, BotCom
 from aiogram.utils import executor
 
 from config.cfg import BOT_TOKEN_ID
-from database import MyDataBase
 from features.bot_check_chats import check_bot_membership
 from handlers.message_send_handler import register_message_send_handler
 from keyboard.chat_ import chat_type_category
 from notify.message_spam import spam_all_groups
+from notify.push_new_user_added import push_new_user_added
 from notify.send_back_check import send_back_check
 from repository.chat_rep import ChatRep
+from repository.user_rep import UserRep
 # from notify.message_spam import spam_all_groups
 from role.accesses import access_admin_to_chat, TypeOfChats, TypeOfAdmins
 from states.state_message import StateMessage
@@ -21,13 +22,6 @@ from states.state_message import StateMessage
 storage = MemoryStorage()
 bot = Bot(token=BOT_TOKEN_ID, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
-
-# @dp.message_handler(lambda m: m.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP], state='*')
-# async def all_message_handler(message: types.Message):
-#     print(message['from']['first_name'])
-#     print(message['from']['username'])
-#     print(message['from']['id'])
-#     print(message['date'])
 
 
 @dp.message_handler(commands=['start'], state='*')
@@ -59,7 +53,7 @@ async def welcome(message: types.Message, state: FSMContext):
             invite_link = await bot.get_chat(message.chat.id)
             await ChatRep().add_chat(message, message.chat.title, datetime.datetime.now(), invite_link['invite_link'])  # add group to db
         elif message.chat.type in [types.ChatType.PRIVATE, ]:
-            if MyDataBase()._is_admin(message['from']['id']) is not None:
+            if UserRep()._is_admin(message['from']['id']) is not None:
                 await message.answer("<b>Привіт, це бот для розсилки сповіщень</b>\n\n"
                                      "Щоб додати групу в розсилку, додайте до неї цього бота як адміна та введіть команду /start\n\n"
                                      "Щоб відправити повідомлення всім групам, введіть команду /messaging",
@@ -71,7 +65,7 @@ async def welcome(message: types.Message, state: FSMContext):
 @dp.message_handler(commands=['add_agency', 'add_apps', 'add_google', 'add_fb', 'add_console', 'add_creo', 'add_pp_web',
                               'add_pp_ads', 'add_media'])
 async def add(message: types.Message):
-    if MyDataBase()._is_admin(message['from']['id']) is not None:
+    if UserRep()._is_admin(message['from']['id']) is not None:
         if message.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP]:
 
             available = 0
@@ -111,7 +105,7 @@ async def send_messeging_to_all(message: types.Message, state: FSMContext):
         await state.reset_state()
 
     if message.chat.type in [types.ChatType.PRIVATE, ]:
-        admin = MyDataBase()._is_admin(message.chat.id)
+        admin = UserRep()._is_admin(message.chat.id)
         if admin is not None and admin['role'] == TypeOfAdmins.ADMIN.value:
             await check_bot_membership(bot, message.chat.id)
         else:
@@ -125,7 +119,7 @@ async def send_messeging_to_all(message: types.Message, state: FSMContext):
         await state.reset_state()
 
     if message.chat.type in [types.ChatType.PRIVATE, ]:
-        admin = MyDataBase()._is_admin(message.chat.id)
+        admin = UserRep()._is_admin(message.chat.id)
         if admin is not None:
             await StateMessage.category.set()
             await message.answer("Оберіть тип чату для відправки: ", reply_markup=chat_type_category(admin))
@@ -134,6 +128,30 @@ async def send_messeging_to_all(message: types.Message, state: FSMContext):
 
 
 register_message_send_handler(dp)
+
+
+@dp.message_handler(lambda m: m.chat.type in [types.ChatType.GROUP, types.ChatType.SUPER_GROUP], state='*')
+async def all_message_handler(message: types.Message):
+    user_id = message['from']['id']
+
+    if not UserRep().is_user(user_id) and not UserRep().is_admin(user_id):
+
+        username = message['from']['username']
+        group_id = message['chat']['id']
+        time_added = message['date']
+        first_name = message['from']['first_name']
+        lang_code = message['from']['language_code']
+        chat_name = message['chat']['title']
+
+        link_group = await bot.get_chat(group_id)
+        link_group = link_group['invite_link']
+
+        if UserRep().add_user(user_id, username, group_id, time_added, first_name, lang_code, chat_name, link_group):
+            user_text = (f"👤 Новий користувач доданий до бази!\nusername: <b>@{username}</b> | {time_added}"
+                         f"\nID: <b>{user_id}</b>\ngroup: <b>{chat_name}</b>"
+                         f"\nlink: <b>{link_group}</b>")
+            # print(f"user @{username} was added")
+            await push_new_user_added(bot, user_text)
 
 
 if __name__ == '__main__':

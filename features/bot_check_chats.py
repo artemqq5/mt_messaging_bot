@@ -1,11 +1,10 @@
 from aiogram.utils.exceptions import ChatNotFound
 
-from database import MyDataBase
 from repository.chat_rep import ChatRep
 
 
 async def check_bot_membership(bot, chat_id):
-    chats = MyDataBase()._all_chats()
+    chats = ChatRep()._all_chats()
 
     results = ""
 
@@ -15,7 +14,7 @@ async def check_bot_membership(bot, chat_id):
 
             if chat['link'] is None:
                 link = await bot.get_chat(chat['group_id'])
-                if link['invite_link'] is not None and MyDataBase()._update_chat_link(chat['group_id'],
+                if link['invite_link'] is not None and ChatRep()._update_chat_link(chat['group_id'],
                                                                                       link['invite_link']):
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nОновлено лінку на групу\n\n"
                 else:
@@ -32,8 +31,8 @@ async def check_bot_membership(bot, chat_id):
                     print(f"check_bot_membership: group was updated old({chat['group_id']}), new({new_group_id})")
                     results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(<b>group was updated</b>): {e}\n\n"
                 else:
-                    if MyDataBase()._get_chat(new_group_id):
-                        if MyDataBase()._remove_chat(chat['group_id']):
+                    if ChatRep()._get_chat(new_group_id):
+                        if ChatRep()._remove_chat(chat['group_id']):
                             print(
                                 f"check_bot_membership: group was updated old({chat['group_id']}), new({new_group_id}), old removed")
                             results += f"{chat['group_id']} | {chat['title']} | {chat['link']}\nСталася помилка(<b>group was updated, old removed</b>): {e}\n\n"

@@ -2,9 +2,9 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 
-from database import MyDataBase
 from notify.message_spam import spam_all_groups
 from notify.send_back_check import send_back_check
+from repository.user_rep import UserRep
 from role.accesses import access_admin_to_chat
 from states.state_message import StateMessage
 
@@ -17,7 +17,7 @@ def register_message_send_handler(dispatcher):
 
 
 async def set_category(message: types.Message, state: FSMContext):
-    admin = MyDataBase()._is_admin(message.chat.id)
+    admin = UserRep()._is_admin(message.chat.id)
     if admin is not None and message.text in access_admin_to_chat[admin['role']]:
         await state.update_data(category=message.text)
         await StateMessage().message.set()

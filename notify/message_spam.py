@@ -1,12 +1,11 @@
 from aiogram.types import ReplyKeyboardRemove
 
-from database import MyDataBase
 from repository.chat_rep import ChatRep
 
 
 async def spam_all_groups(data, message, chat_type=None):
     try:
-        chats = MyDataBase()._all_chats() if chat_type is None else MyDataBase()._chat_by_type(chat_type)
+        chats = ChatRep()._all_chats() if chat_type is None else ChatRep()._chat_by_type(chat_type)
         counter = 0
         for chat in chats:
             try:
