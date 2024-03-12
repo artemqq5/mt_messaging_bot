@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, ParseMode
 
 from notify.message_spam import spam_all_groups
 from notify.send_back_check import send_back_check
@@ -22,8 +22,11 @@ async def set_category(message: types.Message, state: FSMContext):
         await state.update_data(category=message.text)
         await StateMessage().message.set()
         await message.answer(
-            "Введіть свій текст для розсилки: ",
-            reply_markup=ReplyKeyboardRemove()
+            'Введіть свій текст для розсилки: \n'
+            'Для посилань <a href="https://www.example.com">Link Text</a>\n'
+            'Для жирного тексту <b>Bold Text</b>',
+            reply_markup=ReplyKeyboardRemove(),
+            parse_mode=ParseMode.MARKDOWN
         )
     else:
         await state.reset_state()
