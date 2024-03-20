@@ -22,9 +22,7 @@ async def set_category(message: types.Message, state: FSMContext):
         await state.update_data(category=message.text)
         await StateMessage().message.set()
         await message.answer(
-            'Введіть свій текст для розсилки: \n'
-            'Для посилань <a href="https://www.example.com">Link Text</a>\n'
-            'Для жирного тексту <b>Bold Text</b>',
+            'Введіть свій текст для розсилки: ',
             reply_markup=ReplyKeyboardRemove(),
             parse_mode=ParseMode.MARKDOWN
         )
@@ -34,7 +32,7 @@ async def set_category(message: types.Message, state: FSMContext):
 
 
 async def set_message(message: types.Message, state: FSMContext):
-    await state.update_data(message=message.text)
+    await state.update_data(message=message.html_text)
     await StateMessage.photo.set()
     await message.answer(
         "Відправте фото, відео фбо гіфку (формат з стисненням, а не файл), якщо потрібно",
