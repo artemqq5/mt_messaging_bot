@@ -6,7 +6,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from data.other.constants import MESSAGING_GROP, SKIP, SEND, YES
 from data.repositories.AdminRepository import AdminRepository
 from domain.tools.MessageSpamTool import spam_all_groups
-from presentation.keyboard.admin_ import kb_cancel, kb_skip, kb_send, kb_type_group, kb_quetion
+from presentation.keyboard.admin_ import kb_cancel, kb_skip, kb_send, kb_quetion, kb_messaging_category
 from states.SendMessage import SendMessageState
 
 router = Router()
@@ -17,7 +17,7 @@ async def start_create_message(message: types.Message, state: FSMContext):
     admin = AdminRepository().is_admin(message.chat.id)
     await state.set_state(SendMessageState.category)
     await message.answer('Оберіть категорію групи з наявних вашому доступу: ',
-                         reply_markup=kb_type_group(admin).as_markup())
+                         reply_markup=kb_messaging_category(admin).as_markup())
 
 
 @router.message(SendMessageState.category)

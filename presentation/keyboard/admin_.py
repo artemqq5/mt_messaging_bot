@@ -21,6 +21,17 @@ def kb_type_group(admin) -> ReplyKeyboardBuilder:
     return ReplyKeyboardBuilder(keyboard)
 
 
+def kb_messaging_category(admin) -> ReplyKeyboardBuilder:
+    keyboard = []
+
+    for chat in access_admin_to_chat[admin['role']]:
+        keyboard.append([KeyboardButton(text=chat)])
+
+    keyboard.append([KeyboardButton(text=CANCEL)])
+
+    return ReplyKeyboardBuilder(keyboard)
+
+
 kb_cancel = ReplyKeyboardBuilder(markup=[
     [KeyboardButton(text=CANCEL)]
 ])
