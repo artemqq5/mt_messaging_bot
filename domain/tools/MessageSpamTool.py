@@ -1,5 +1,7 @@
+from aiogram.exceptions import TelegramMigrateToChat
 from aiogram.types import ReplyKeyboardRemove
 
+from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
 from presentation.keyboard.admin_ import kb_main
 
@@ -12,22 +14,17 @@ async def spam_all_groups(data, message, chat_type=None):
             try:
                 await send_message(data, message, chat['group_id'])
                 counter += 1
-            except Exception as e:
-                if "The group has been migrated to a supergroup. New id" in str(e):
-                    new_group_id = str(e).split(" ")[-1].replace(".", "")
-                    print(f"spam_group: {e}")
-                    updated = ChatRepository().update_group_id(old_group_id=chat['group_id'], new_group_id=new_group_id)
-                    if updated:
-                        print(f"group was updated and send again old({chat['group_id']}), new({new_group_id})")
-                        try:
-                            await send_message(data, message, new_group_id)
-                            counter += 1
-                        except Exception as e:
-                            print(f"spam_group_repeat: {e}")
-                    else:
-                        print(f"group was NOT updated and send again old({chat['group_id']}), new({new_group_id})")
+            except TelegramMigrateToChat as e:
+                updated = ChatRepository().update_group_id(old_group_id=chat['group_id'], new_group_id=e.migrate_to_chat_id)
+                if updated:
+                    print(f"group was updated and send again old({chat['group_id']}), new({e.migrate_to_chat_id})")
+                    try:
+                        await send_message(data, message, e.migrate_to_chat_id)
+                        counter += 1
+                    except Exception as e:
+                        print(f"spam_group_repeat: {e}")
                 else:
-                    print(f"spam_group: {e}")
+                    print(f"group was NOT updated and send again old({chat['group_id']}), new({e.migrate_to_chat_id})")
         await message.answer(
             "Сповіщення отримали {0} груп з {1}".format(counter, len(chats)),
             reply_markup=kb_main.as_markup()
@@ -45,3 +42,13 @@ async def send_message(data, message, group_id):
         await message.bot.send_animation(chat_id=group_id, animation=data['animation'], caption=data['message'])
     else:
         await message.bot.send_message(chat_id=group_id, text=data['message'])
+
+
+async def push_new_user_added(bot, message):
+    admins_with_all_access = AdminRepository().get_admins()
+
+    for admin in admins_with_all_access:
+        try:
+            await bot.send_message(chat_id=admin['telegram_id'], text=message)
+        except Exception as e:
+            print(f"push_new_user_added(): {e}")

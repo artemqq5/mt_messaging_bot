@@ -20,7 +20,7 @@ class ChatRepository(MyDataBase):
 
     def update_chat_link(self, group_id, link):
         query = "UPDATE `chats` SET `link` = %s WHERE `group_id` = %s;"
-        return self._update(query, (group_id, link))
+        return self._update(query, (link, group_id))
 
     def all_chats(self):
         query = "SELECT * FROM `chats`;"
@@ -30,6 +30,11 @@ class ChatRepository(MyDataBase):
         if not has_value_enum(TypeOfChats, chat_type):
             return
         query = f"SELECT * FROM `chats` WHERE `{chat_type}` = '1';"
+        return self._select(query)
+
+    def unspecified_chats(self):
+        query = (
+            "SELECT * FROM `chats` WHERE  creo = 0 AND google = 0 AND fb = 0 AND console = 0 AND apps = 0 AND pp_web = 0 AND  pp_ads = 0 AND media = 0 AND agency_google = 0 AND agency_fb = 0;")
         return self._select(query)
 
     def update_chat_type(self, group_id, chat_type, available):

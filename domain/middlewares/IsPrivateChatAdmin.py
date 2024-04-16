@@ -16,7 +16,9 @@ class IsPrivateChatAdmin(BaseMiddleware):
         if not isinstance(event, (types.Message, types.CallbackQuery)):
             return
 
-        if event.chat.type != ChatType.PRIVATE or not AdminRepository().is_admin(event.from_user.id):
+        chat = event.message.chat if isinstance(event, types.CallbackQuery) else event.chat
+
+        if chat.type != ChatType.PRIVATE or not AdminRepository().is_admin(event.from_user.id):
             return
 
         return await handler(event, data)

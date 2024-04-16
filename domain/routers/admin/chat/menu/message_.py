@@ -1,15 +1,10 @@
 from aiogram import Router, F, types
-from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import ReplyKeyboardRemove
 
 from data.other.constants import MESSAGING_GROP, SKIP, SEND
 from data.repositories.AdminRepository import AdminRepository
-from domain.filters.IsAdmin import IsAdminFilter
-from domain.middlewares.IsPrivateChatAdmin import IsPrivateChatAdmin
-from notify.message_spam import spam_all_groups
-from presentation.keyboard.admin_ import kb_main, kb_cancel, kb_skip, kb_send, kb_access_category
+from domain.tools.MessageSpamTool import spam_all_groups
+from presentation.keyboard.admin_ import kb_cancel, kb_skip, kb_send, kb_type_group
 from states.SendMessage import SendMessageState
 
 router = Router()
@@ -20,7 +15,7 @@ async def start_create_message(message: types.Message, state: FSMContext):
     admin = AdminRepository().is_admin(message.chat.id)
     await state.set_state(SendMessageState.category)
     await message.answer('Оберіть категорію групи з наявних вашому доступу: ',
-                         reply_markup=kb_access_category(admin).as_markup())
+                         reply_markup=kb_type_group(admin).as_markup())
 
 
 @router.message(SendMessageState.category)

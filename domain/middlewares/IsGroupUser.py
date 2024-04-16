@@ -4,9 +4,10 @@ from aiogram.enums import ChatType
 from aiogram.types import TelegramObject
 
 from data.repositories.AdminRepository import AdminRepository
+from data.repositories.UserRepository import UserRepository
 
 
-class IsGroupAdmin(BaseMiddleware):
+class IsGroupUser(BaseMiddleware):
     async def __call__(
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
@@ -18,8 +19,8 @@ class IsGroupAdmin(BaseMiddleware):
 
         chat = event.message.chat if isinstance(event, types.CallbackQuery) else event.chat
 
-        if chat.type not in [ChatType.GROUP, ChatType.SUPERGROUP] or not AdminRepository().is_admin(
-                event.from_user.id):
+        if chat.type not in [ChatType.GROUP, ChatType.SUPERGROUP] or AdminRepository().is_admin(
+                event.from_user.id) or UserRepository().is_user(event.from_user.id):
             return
 
         return await handler(event, data)

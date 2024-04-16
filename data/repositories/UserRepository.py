@@ -1,7 +1,7 @@
 from data.MyDataBase import MyDataBase
 
 
-class Userrepisitory(MyDataBase):
+class UserRepository(MyDataBase):
 
     def __init__(self):
         super().__init__()
@@ -13,3 +13,7 @@ class Userrepisitory(MyDataBase):
     def add_user(self, user_id, username, group_id, time, first_name, lang_code, chat_name, link_group):
         query = "INSERT INTO `users` (`user_id`, `username`, `group_id`, `time`, `first_name`, `language_code`, `title_gruop`, `link_group`) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
         return self._insert(query, (user_id, username, group_id, time, first_name, lang_code, chat_name, link_group))
+
+    def get_users(self):
+        query = "SELECT * FROM `users`;"
+        return self._select(query)

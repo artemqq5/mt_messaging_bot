@@ -1,14 +1,9 @@
-from aiogram import Router, F, types
+from aiogram import Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import ReplyKeyboardRemove, Message
+from aiogram.types import Message
 
-from data.other.constants import *
-from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
-from domain.filters.IsAdmin import IsAdminFilter
-from domain.middlewares.IsPrivateChatAdmin import IsPrivateChatAdmin
-from presentation.keyboard.admin_ import kb_main, kb_cancel
 
 router = Router()
 
@@ -29,4 +24,4 @@ async def update_chat(message: Message, state: FSMContext):
     if ChatRepository().update_chat_type(message.chat.id, chat_type, available):
         await message.answer(f"Група оновила статус {chat_type} на {available}")
     else:
-        await message.answer(f"Помилка при оновленні статусу")
+        await message.answer(f"Помилка при оновленні статусу, можливо ви міняєте на той самий")
