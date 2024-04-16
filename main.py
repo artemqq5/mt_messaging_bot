@@ -29,7 +29,7 @@ dp = Dispatcher(storage=storage)
 
 
 async def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.ERROR)
     default_properties = DefaultBotProperties(parse_mode=ParseMode.HTML)
     bot = Bot(token=BOT_TOKEN, default=default_properties)
 
