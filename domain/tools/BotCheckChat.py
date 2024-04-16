@@ -20,7 +20,10 @@ async def check_bot_membership(bot, chat_id):
                     results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nНе вийшло оновити лінку на групу (скоріше за все бот не доданий як адмін)\n\nНе виправлено ❌"
         except TelegramForbiddenError as e:
             if e.message.__contains__("bot was kicked from the group chat") or e.message.__contains__("bot was kicked from the supergroup chat"):
-                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nБот був кікнутий з групи (Групу видалено з бази)\n\nВиправлено ✅"
+                if ChatRepository().remove_chat(chat['group_id']):
+                    results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nБот був кікнутий з групи (Групу видалено з бази)\n\nВиправлено ✅"
+                else:
+                    results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nБот був кікнутий з групи (Групу НЕ видалено з бази)\n\n Не виправлено ❌"
             else:
                 results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\n{e.message}\n\n Не виправлено ❌"
         except TelegramMigrateToChat as e:

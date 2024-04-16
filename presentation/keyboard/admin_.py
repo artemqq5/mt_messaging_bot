@@ -3,8 +3,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardBut
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from data.other.accesses import access_admin_to_chat, TypeOfAdmins
-from data.other.constants import VIEW_ALL_GROUP, MESSAGING_GROP, CANCEL, SKIP, SEND, BUG_REPORT,  \
-    UNSPECIFIED_GROUPS, STATISTIC
+from data.other.constants import VIEW_ALL_GROUP, MESSAGING_GROP, CANCEL, SKIP, SEND, BUG_REPORT, \
+    UNSPECIFIED_GROUPS, STATISTIC, YES
 
 
 def kb_type_group(admin) -> ReplyKeyboardBuilder:
@@ -35,6 +35,12 @@ kb_main = ReplyKeyboardBuilder(markup=[
     [KeyboardButton(text=MESSAGING_GROP)],
     [KeyboardButton(text=BUG_REPORT)],
     [KeyboardButton(text=STATISTIC)]
+])
+
+kb_quetion = ReplyKeyboardBuilder(markup=[
+    [KeyboardButton(text=YES)],
+    [KeyboardButton(text=SKIP)],
+    [KeyboardButton(text=CANCEL)]
 ])
 
 kb_send = ReplyKeyboardBuilder(markup=[

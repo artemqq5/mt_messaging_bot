@@ -1,4 +1,6 @@
 from aiogram.exceptions import TelegramMigrateToChat
+from aiogram.types import InlineKeyboardButton, ReplyKeyboardRemove
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
@@ -14,7 +16,8 @@ async def spam_all_groups(data, message, chat_type=None):
                 await send_message(data, message, chat['group_id'])
                 counter += 1
             except TelegramMigrateToChat as e:
-                updated = ChatRepository().update_group_id(old_group_id=chat['group_id'], new_group_id=e.migrate_to_chat_id)
+                updated = ChatRepository().update_group_id(old_group_id=chat['group_id'],
+                                                           new_group_id=e.migrate_to_chat_id)
                 if updated:
                     print(f"group was updated and send again old({chat['group_id']}), new({e.migrate_to_chat_id})")
                     try:
@@ -35,14 +38,20 @@ async def spam_all_groups(data, message, chat_type=None):
 
 
 async def send_message(data, message, group_id):
-    if data.get('photo', None) is not None:
-        await message.bot.send_photo(chat_id=group_id, photo=data['photo'], caption=data['message'])
-    elif data.get('video', None) is not None:
-        await message.bot.send_video(chat_id=group_id, video=data['video'], caption=data['message'])
-    elif data.get('animation', None) is not None:
-        await message.bot.send_animation(chat_id=group_id, animation=data['animation'], caption=data['message'])
+    if data.get('btn_text', None):
+        kb = InlineKeyboardBuilder(
+            markup=[[InlineKeyboardButton(text=data['btn_text'], url=data['btn_url'])]]).as_markup()
     else:
-        await message.bot.send_message(chat_id=group_id, text=data['message'])
+        kb = ReplyKeyboardRemove()
+
+    if data.get('photo', None) is not None:
+        await message.bot.send_photo(chat_id=group_id, photo=data['photo'], caption=data['message'], reply_markup=kb)
+    elif data.get('video', None) is not None:
+        await message.bot.send_video(chat_id=group_id, video=data['video'], caption=data['message'], reply_markup=kb)
+    elif data.get('animation', None) is not None:
+        await message.bot.send_animation(chat_id=group_id, animation=data['animation'], caption=data['message'], reply_markup=kb)
+    else:
+        await message.bot.send_message(chat_id=group_id, text=data['message'], reply_markup=kb)
 
 
 async def push_new_user_added(bot, message):
