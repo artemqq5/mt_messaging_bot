@@ -42,6 +42,8 @@ async def check_bot_membership(bot, chat_id):
                     print(
                         f"check_bot_membership: group was NOT updated old({chat['group_id']}), new({e.migrate_to_chat_id})")
                     results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nСталася помилка(<b>group was NOT updated</b>): {e}\n\nНе виправлено ❌"
-
+        except Exception as e:
+            print(f"check_bot_membership: no type error ({chat['group_id']})")
+            results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nСталася помилка: {e}\n\nНе виправлено ❌"
         if results:
             await bot.send_message(chat_id=chat_id, text=results)

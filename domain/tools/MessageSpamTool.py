@@ -24,6 +24,8 @@ async def spam_all_groups(data, message, chat_type=None):
                         print(f"spam_group_repeat: {e}")
                 else:
                     print(f"group was NOT updated and send again old({chat['group_id']}), new({e.migrate_to_chat_id})")
+            except Exception as e:
+                print(f"check_bot_membership: no type error ({chat['group_id']}) {e}")
         await message.answer(
             "Сповіщення отримали {0} груп з {1}".format(counter, len(chats)),
             reply_markup=kb_main.as_markup()
