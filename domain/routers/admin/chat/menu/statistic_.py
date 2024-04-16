@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from data.other.accesses import access_admin_to_chat, TypeOfAdmins
-from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS, ALL_GROUPS, STATISTIC, BUG_REPORT
+from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS, STATISTIC, BUG_REPORT
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
 from data.repositories.UserRepository import UserRepository

@@ -3,7 +3,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardBut
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from data.other.accesses import access_admin_to_chat, TypeOfAdmins
-from data.other.constants import VIEW_ALL_GROUP, MESSAGING_GROP, CANCEL, SKIP, SEND, BUG_REPORT, ALL_GROUPS, \
+from data.other.constants import VIEW_ALL_GROUP, MESSAGING_GROP, CANCEL, SKIP, SEND, BUG_REPORT,  \
     UNSPECIFIED_GROUPS, STATISTIC
 
 
@@ -12,7 +12,6 @@ def kb_type_group(admin) -> ReplyKeyboardBuilder:
 
     if admin['role'] == TypeOfAdmins.ADMIN.value:
         keyboard.append([KeyboardButton(text=UNSPECIFIED_GROUPS)])
-        keyboard.append([KeyboardButton(text=ALL_GROUPS)])
 
     for chat in access_admin_to_chat[admin['role']]:
         keyboard.append([KeyboardButton(text=chat)])

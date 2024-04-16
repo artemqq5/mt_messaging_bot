@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from data.other.accesses import access_admin_to_chat, TypeOfAdmins
-from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS, ALL_GROUPS
+from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
 from domain.filters.IsMainAdmin import IsMainAdminFilter
@@ -20,14 +20,11 @@ async def choice_type_groups(message: Message, state: FSMContext):
     await message.answer("Оберіть тип групи", reply_markup=kb_type_group(admin).as_markup())
 
 
-@router.message(ShowGroupState.TypeGroup, IsMainAdminFilter(), F.text.in_((UNSPECIFIED_GROUPS, ALL_GROUPS)))
+@router.message(ShowGroupState.TypeGroup, IsMainAdminFilter(), F.text == UNSPECIFIED_GROUPS)
 async def show_specific_groups(message: Message, state: FSMContext):
-    if message.text == UNSPECIFIED_GROUPS:
-        chats = ChatRepository().unspecified_chats()
-    else:
-        chats = ChatRepository().all_chats()
+    chats = ChatRepository().unspecified_chats()[:100]
 
-    await message.answer(f"Групи за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
+    await message.answer(f"Перші 100 груп за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
 
 
 @router.message(ShowGroupState.TypeGroup)
@@ -36,8 +33,8 @@ async def show_groups(message: Message, state: FSMContext):
     if message.text not in access_admin_to_chat[admin['role']]:
         return
 
-    chats = ChatRepository().chat_by_type(message.text)
-    await message.answer(f"Групи за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
+    chats = ChatRepository().chat_by_type(message.text)[:100]
+    await message.answer(f"Перші 100 груп за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
 
 
 @router.callback_query(GroupCalback.filter())

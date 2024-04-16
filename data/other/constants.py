@@ -9,7 +9,6 @@ CANCEL_SUCCESS = "Операція скасована"
 SKIP = "Пропустити"
 
 UNSPECIFIED_GROUPS = "Невизначені групи"
-ALL_GROUPS = "Всі групи"
 
 SEND = "Відправити"
 

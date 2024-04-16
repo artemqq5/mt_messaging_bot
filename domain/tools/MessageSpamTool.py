@@ -1,5 +1,4 @@
 from aiogram.exceptions import TelegramMigrateToChat
-from aiogram.types import ReplyKeyboardRemove
 
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
