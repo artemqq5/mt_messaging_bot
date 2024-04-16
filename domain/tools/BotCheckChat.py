@@ -20,9 +20,9 @@ async def check_bot_membership(bot, chat_id):
                     results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nНе вийшло оновити лінку на групу (скоріше за все бот не доданий як адмін)\n\nНе виправлено ❌"
         except TelegramForbiddenError as e:
             if e.message.__contains__("bot was kicked from the group chat"):
-                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nБот був кікнутий з групи\n\nНе виправлено ❌"
+                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nБот був кікнутий з групи (Групу видалено з бази)\n\nВиправлено ✅"
             else:
-                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\n{e.message}\n\nНе виправлено ❌"
+                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\n{e.message}\n\n Не виправлено ❌"
         except TelegramMigrateToChat as e:
             updated = ChatRepository().update_group_id(old_group_id=chat['group_id'], new_group_id=e.migrate_to_chat_id)
             if updated:
@@ -43,7 +43,14 @@ async def check_bot_membership(bot, chat_id):
                         f"check_bot_membership: group was NOT updated old({chat['group_id']}), new({e.migrate_to_chat_id})")
                     results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nСталася помилка(<b>group was NOT updated</b>): {e}\n\nНе виправлено ❌"
         except Exception as e:
-            print(f"check_bot_membership: no type error ({chat['group_id']})")
-            results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nСталася помилка: {e}\n\nНе виправлено ❌"
+            print(f"check_bot_membership: no type error {e} ({chat['group_id']})")
+            if ChatRepository().remove_chat(chat['group_id']):
+                print(
+                    f"check_bot_membership: group was deleted({chat['group_id']})")
+                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nПомилка: {e}\nГрупу видалено\n\nВиправлено ✅"
+            else:
+                print(
+                    f"check_bot_membership: group was NOT deleted({chat['group_id']})")
+                results += f"{chat['group_id']} | {chat['title']}\n{chat['link']}\n\nСталася помилка: {e}\nГрупу НЕ видалено\n\nНе виправлено ❌"
         if results:
             await bot.send_message(chat_id=chat_id, text=results)
