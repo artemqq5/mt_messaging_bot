@@ -22,7 +22,7 @@ async def all_message_handler(message: types.Message, bot: Bot):
     chat_name = message.chat.title
 
     link_group = await bot.get_chat(group_id)
-    link_group = link_group.invite_link
+    link_group = link_group.invite_link if link_group else None
 
     if UserRepository().add_user(user_id, username, group_id, time_added, first_name, lang_code, chat_name, link_group):
         user_text = (f"👤 Новий користувач доданий до бази!\nusername: <b>@{username}</b> | {time_added}"
