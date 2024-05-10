@@ -21,6 +21,7 @@ class TypeOfChats(Enum):
     PP_WEB = "pp_web"
     PP_ADS = "pp_ads"
     MEDIA = "media"
+    ALL = "all users"
 
 
 access_admin_to_chat = {
@@ -34,6 +35,7 @@ access_admin_to_chat = {
         TypeOfChats.PP_WEB.value,
         TypeOfChats.PP_ADS.value,
         TypeOfChats.MEDIA.value,
+        TypeOfChats.ALL.value,
     ],
 
     TypeOfAdmins.ADMIN_AGENCY.value: [TypeOfChats.AGENCY.value],

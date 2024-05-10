@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-from role.accesses import TypeOfAdmins, access_admin_to_chat
+from role.accesses import access_admin_to_chat
 
 
 def chat_type_category(admin) -> ReplyKeyboardMarkup:

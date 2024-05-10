@@ -78,6 +78,9 @@ async def send_message(message: types.Message, state: FSMContext):
     if message.text == "Відправити":
         data = await state.get_data()
         await state.finish()
-        await spam_all_groups(data, message, data.get('category', None))
+        if data.get('category') == 'all users':
+            await spam_all_groups(data, message)
+        else:
+            await spam_all_groups(data, message, data.get('category', None))
     else:
         await message.answer("Некоректний ввід")
