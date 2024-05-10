@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from data.other.accesses import TypeOfChats
 from data.other.constants import MESSAGING_GROP, SKIP, SEND, YES
 from data.repositories.AdminRepository import AdminRepository
 from domain.tools.MessageSpamTool import spam_all_groups
@@ -107,4 +108,7 @@ async def set_photo(message: types.Message, state: FSMContext):
 async def message_preview(message: types.Message, state: FSMContext):
     data = await state.get_data()
     await state.clear()
-    await spam_all_groups(data, message, data.get('category', None))
+    if data.get('category', None) == TypeOfChats.ALL.value:
+        await spam_all_groups(data, message)
+    else:
+        await spam_all_groups(data, message, data.get('category', None))

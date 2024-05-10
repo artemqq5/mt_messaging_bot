@@ -22,6 +22,7 @@ class TypeOfChats(Enum):
     PP_WEB = "pp_web"
     PP_ADS = "pp_ads"
     MEDIA = "media"
+    ALL = "all"
 
 
 def has_value_enum(enum, value):
@@ -40,6 +41,7 @@ access_admin_to_chat = {
         TypeOfChats.PP_WEB.value,
         TypeOfChats.PP_ADS.value,
         TypeOfChats.MEDIA.value,
+        TypeOfChats.ALL.value,
     ],
 
     TypeOfAdmins.ADMIN_AGENCY.value: [TypeOfChats.AGENCY_FB.value, TypeOfChats.AGENCY_GOOGLE.value],
