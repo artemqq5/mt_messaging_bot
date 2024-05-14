@@ -23,11 +23,11 @@ async def choice_type_groups(message: Message, state: FSMContext):
 
 @router.message(ShowGroupState.TypeGroup, IsMainAdminFilter(), F.text == UNSPECIFIED_GROUPS)
 async def show_specific_groups(message: Message, state: FSMContext):
-    chats = ChatRepository().unspecified_chats()[:100]
+    chats = ChatRepository().unspecified_chats()
     await state.update_data(chats=chats)
 
     await message.answer(
-        f"Перші 100 груп за типом <b>{message.text}</b>:",
+        f"Групи за типом <b>{message.text}</b>:",
         reply_markup=generate_pagination_groups(current_page=1, groups=chats).as_markup()
     )
 
@@ -38,11 +38,11 @@ async def show_groups(message: Message, state: FSMContext):
     if message.text not in access_admin_to_chat[admin['role']]:
         return
 
-    chats = ChatRepository().chat_by_type(message.text)[:100]
+    chats = ChatRepository().chat_by_type(message.text)
     await state.update_data(chats=chats)
 
     await message.answer(
-        f"Перші 100 груп за типом <b>{message.text}</b>:",
+        f"Групи за типом <b>{message.text}</b>:",
         reply_markup=generate_pagination_groups(current_page=1, groups=chats).as_markup()
     )
 
