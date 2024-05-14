@@ -7,7 +7,8 @@ from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
 from domain.filters.IsMainAdmin import IsMainAdminFilter
-from presentation.keyboard.admin_ import kb_type_group, kb_groups, GroupCalback, kb_main
+from presentation.keyboard.admin_ import kb_type_group, kb_groups, GroupCallback, kb_main, generate_pagination_groups, \
+    GroupPageCallback
 from states.ShowGroup import ShowGroupState
 
 router = Router()
@@ -23,8 +24,12 @@ async def choice_type_groups(message: Message, state: FSMContext):
 @router.message(ShowGroupState.TypeGroup, IsMainAdminFilter(), F.text == UNSPECIFIED_GROUPS)
 async def show_specific_groups(message: Message, state: FSMContext):
     chats = ChatRepository().unspecified_chats()[:100]
+    await state.update_data(chats=chats)
 
-    await message.answer(f"Перші 100 груп за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
+    await message.answer(
+        f"Перші 100 груп за типом <b>{message.text}</b>:",
+        reply_markup=generate_pagination_groups(current_page=1, groups=chats).as_markup()
+    )
 
 
 @router.message(ShowGroupState.TypeGroup)
@@ -34,23 +39,37 @@ async def show_groups(message: Message, state: FSMContext):
         return
 
     chats = ChatRepository().chat_by_type(message.text)[:100]
-    await message.answer(f"Перші 100 груп за типом <b>{message.text}</b>:", reply_markup=kb_groups(chats).as_markup())
+    await state.update_data(chats=chats)
+
+    await message.answer(
+        f"Перші 100 груп за типом <b>{message.text}</b>:",
+        reply_markup=generate_pagination_groups(current_page=1, groups=chats).as_markup()
+    )
 
 
-@router.callback_query(GroupCalback.filter())
+@router.callback_query(GroupPageCallback.filter())
+async def page_group_listener(callback: CallbackQuery, state: FSMContext):
+    page = int(callback.data.split(":")[1])
+    data = await state.get_data()
+    await callback.message.edit_reply_markup(
+        reply_markup=generate_pagination_groups(current_page=page, groups=data['chats']).as_markup()
+    )
+
+
+@router.callback_query(GroupCallback.filter())
 async def about_group(callback: CallbackQuery, bot: Bot):
     id_ = callback.data.split(":")[1]
     group = ChatRepository().get_chat(id_)
 
-    categoties = [str(f"{i}\n").replace("_", " ") for i in group if str(group[i]) == '1']
+    categories = [str(f"{i}\n").replace("_", " ") for i in group if str(group[i]) == '1']
 
-    if len(categoties) > 0:
-        categoties = ''.join(categoties)
+    if len(categories) > 0:
+        categories = ''.join(categories)
     else:
-        categoties = "Невизначена група\n"
+        categories = "Невизначена група\n"
 
     info = f"{group['title']} (<code>{group['group_id']}</code>):\n\n"
-    info += f"<b>Категорії групи:</b> \n{categoties}\n"
+    info += f"<b>Категорії групи:</b> \n{categories}\n"
     info += f"<b>Запрошувальне посилання:</b> {group['link']}\n"
     info += f"Група додана: {group['time']}"
 

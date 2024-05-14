@@ -9,7 +9,7 @@ from data.repositories.ChatRepository import ChatRepository
 from data.repositories.UserRepository import UserRepository
 from domain.filters.IsMainAdmin import IsMainAdminFilter
 from domain.tools.BotCheckChat import check_bot_membership
-from presentation.keyboard.admin_ import kb_type_group, kb_groups, GroupCalback, kb_main
+from presentation.keyboard.admin_ import kb_type_group, kb_groups, GroupCallback, kb_main
 from states.ShowGroup import ShowGroupState
 
 router = Router()
