@@ -2,7 +2,7 @@ from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from data.other.accesses import access_admin_to_chat, TypeOfAdmins
+from data.other.accesses import access_admin_to_chat, TypeOfAdmins, TypeOfChats
 from data.other.constants import VIEW_ALL_GROUP, UNSPECIFIED_GROUPS
 from data.repositories.AdminRepository import AdminRepository
 from data.repositories.ChatRepository import ChatRepository
@@ -37,8 +37,11 @@ async def show_groups(message: Message, state: FSMContext):
     admin = AdminRepository().is_admin(message.chat.id)
     if message.text not in access_admin_to_chat[admin['role']]:
         return
+    if message.text == TypeOfChats.ALL.value:
+        chats = ChatRepository().all_chats()
+    else:
+        chats = ChatRepository().chat_by_type(message.text)
 
-    chats = ChatRepository().chat_by_type(message.text)
     await state.update_data(chats=chats)
 
     await message.answer(
