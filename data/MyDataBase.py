@@ -1,6 +1,6 @@
 import pymysql
 
-from config.private_cfg import DB_PASSWORD
+from private_cfg import DB_PASSWORD
 
 
 class MyDataBase:

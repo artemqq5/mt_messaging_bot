@@ -9,7 +9,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import ChatMemberUpdated
 
 import domain.routers.admin.chat.main_chat
-from config.private_cfg import BOT_TOKEN
+from private_cfg import BOT_TOKEN
 from data.repositories.ChatRepository import ChatRepository
 from domain.routers.admin.group import main_group
 from domain.routers.user import main_

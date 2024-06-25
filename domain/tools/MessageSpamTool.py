@@ -38,9 +38,12 @@ async def spam_all_groups(data, message, chat_type=None):
 
 
 async def send_message(data, message, group_id):
-    if data.get('btn_text', None):
-        kb = InlineKeyboardBuilder(
-            markup=[[InlineKeyboardButton(text=data['btn_text'], url=data['btn_url'])]]).as_markup()
+    if len(data.get('buttons', [])) > 0:
+        kb = InlineKeyboardBuilder()
+        for button in data.get('buttons', []):
+            kb.add(InlineKeyboardButton(text=button['btn_text'], url=button['btn_url']))
+        kb.adjust(1)
+        kb = kb.as_markup()
     else:
         kb = ReplyKeyboardRemove()
 

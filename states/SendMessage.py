@@ -7,6 +7,7 @@ class SendMessageState(StatesGroup):
     button = State()
     buttonText = State()
     buttonUrl = State()
+    buttonRepeat = State()
     photo = State()
     preview = State()
 
