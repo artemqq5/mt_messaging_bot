@@ -1,4 +1,5 @@
 from aiogram import Router, F, Bot
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
@@ -71,10 +72,10 @@ async def about_group(callback: CallbackQuery, bot: Bot):
     else:
         categories = "Невизначена група\n"
 
-    info = f"{group['title']} (<code>{group['group_id']}</code>):\n\n"
-    info += f"<b>Категорії групи:</b> \n{categories}\n"
-    info += f"<b>Запрошувальне посилання:</b> {group['link']}\n"
+    info = f"*{group['title']}* (`{group['group_id']}`):\n\n"
+    info += f"*Категорії групи:*\n{categories}\n"
+    info += f"*Запрошувальне посилання:* {group['link']}\n"
     info += f"Група додана: {group['time']}"
 
     admin = AdminRepository().is_admin(callback.from_user.id)
-    await callback.message.answer(info, reply_markup=kb_type_group(admin).as_markup())
+    await callback.message.answer(info, reply_markup=kb_type_group(admin).as_markup(), parse_mode=ParseMode.MARKDOWN)
