@@ -31,6 +31,7 @@ async def set_category(message: types.Message, state: FSMContext):
 @router.message(SendMessageState.message)
 async def set_message(message: types.Message, state: FSMContext):
     await state.update_data(message=message.html_text)
+    await state.update_data(buttons=[])
     await state.set_state(SendMessageState.button)
     await message.answer("Бажаєте додати кнопку?", reply_markup=kb_quetion.as_markup())
 
@@ -44,6 +45,7 @@ async def set_button(message: types.Message, state: FSMContext):
         return
 
     await state.set_state(SendMessageState.buttonText)
+    await add_new_button(state)  # add new dict for button
     await message.answer(
         "Вигадайте текст для кнопки(50 символів) або залиште дефолтний", reply_markup=kb_skip.as_markup()
     )
@@ -55,10 +57,7 @@ async def set_button_text(message: types.Message, state: FSMContext):
         await message.answer("До 50 символів!", reply_markup=kb_skip.as_markup())
         return
 
-    if message.text == SKIP:
-        await state.update_data(btn_text="Перейти")
-    else:
-        await state.update_data(btn_text=message.text)
+    await add_text_last_button(state, message.text)  # add text for last button
 
     await state.set_state(SendMessageState.buttonUrl)
     await message.answer("Відправте url куди перенправити", reply_markup=kb_cancel.as_markup())
@@ -66,19 +65,41 @@ async def set_button_text(message: types.Message, state: FSMContext):
 
 @router.message(SendMessageState.buttonUrl)
 async def set_button_url(message: types.Message, state: FSMContext):
-    await state.update_data(btn_url=message.text)
-    await state.set_state(SendMessageState.photo)
-    await message.answer("Відправте фото, відео або гіфку (формат з стисненням, а не файл)",
-                         reply_markup=kb_skip.as_markup())
+    await add_url_last_button(state, message.text)  # add url for last button
+    await state.set_state(SendMessageState.buttonRepeat)
+    await message.answer("Бажаєте додати ще кнопку?", reply_markup=kb_quetion.as_markup())
+
+
+@router.message(SendMessageState.buttonRepeat, F.text.in_((SKIP, YES)))
+async def set_message(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+
+    if len(data.get("buttons", [])) >= 10:
+        await message.answer("Вже 10 кнопок, це ліміт")
+
+    if message.text == SKIP or len(data.get("buttons", [])) >= 10:
+        await state.set_state(SendMessageState.photo)
+        await message.answer("Відправте фото, відео або гіфку (формат з стисненням, а не файл)",
+                             reply_markup=kb_skip.as_markup())
+        return
+
+    await state.set_state(SendMessageState.buttonText)
+    await add_new_button(state)  # add new dict for button
+    await message.answer(
+        "Вигадайте текст для кнопки(50 символів) або залиште дефолтний", reply_markup=kb_skip.as_markup()
+    )
 
 
 @router.message(SendMessageState.photo, (F.photo | F.animation | F.video | (F.text & F.text == SKIP)))
 async def set_photo(message: types.Message, state: FSMContext):
     await state.set_state(SendMessageState.preview)
     data = await state.get_data()
-    if data.get('btn_text', None):
-        kb = InlineKeyboardBuilder(
-            markup=[[InlineKeyboardButton(text=data['btn_text'], url=data['btn_url'])]]).as_markup()
+    if len(data.get('buttons', [])) > 0:
+        kb = InlineKeyboardBuilder()
+        for button in data.get('buttons', []):
+            kb.add(InlineKeyboardButton(text=button['btn_text'], url=button['btn_url']))
+        kb.adjust(1)
+        kb = kb.as_markup()
     else:
         kb = ReplyKeyboardRemove()
 
@@ -112,3 +133,29 @@ async def message_preview(message: types.Message, state: FSMContext):
         await spam_all_groups(data, message)
     else:
         await spam_all_groups(data, message, data.get('category', None))
+
+
+async def add_new_button(state: FSMContext):
+    data = await state.get_data()
+    buttons = data.get("buttons", [])
+    buttons.append({})
+    await state.update_data(buttons=buttons)
+
+
+async def add_text_last_button(state: FSMContext, text: str):
+    data = await state.get_data()
+    buttons = data.get("buttons", [{}])
+    if text == SKIP:
+        buttons[-1]['btn_text'] = "Перейти"
+    else:
+        buttons[-1]['btn_text'] = text
+
+    await state.update_data(buttons=buttons)
+
+
+async def add_url_last_button(state: FSMContext, text: str):
+    data = await state.get_data()
+    buttons = data.get("buttons", [{}])
+    buttons[-1]['btn_url'] = text
+
+    await state.update_data(buttons=buttons)
