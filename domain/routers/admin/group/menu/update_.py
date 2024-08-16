@@ -22,6 +22,6 @@ async def update_chat(message: Message, state: FSMContext):
         print(f"exception update {e}")
 
     if ChatRepository().update_chat_type(message.chat.id, chat_type, available):
-        await message.answer(f"Група оновила статус {chat_type} на {available}")
+        await message.answer(f"The group updated its status {chat_type} on {available}")
     else:
-        await message.answer(f"Помилка при оновленні статусу, можливо ви міняєте на той самий")
+        await message.answer(f"Error updating the status, maybe you are changing to the same one")

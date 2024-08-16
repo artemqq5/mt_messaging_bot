@@ -24,7 +24,7 @@ router.callback_query.middleware(IsGroupAdmin())
 @router.message(Command("start"), IsGropFilter())
 async def start(message: types.Message, state: FSMContext):
     if ChatRepository().add_chat(group_id=message.chat.id, title=message.chat.title, datetime=datetime.now()):
-        await message.answer("Група додана, встановіть статус")
+        await message.answer("Group added, set status")
     else:
-        await message.answer("Помилка або група додана раніше, спробуйте встановити статус")
+        await message.answer("Error or the group was added earlier, please try to set the status")
 
