@@ -60,7 +60,7 @@ access_admin_to_chat = {
 
     TypeOfAdmins.ADMIN_CREO.value: [TypeOfChats.CREO.value],
 
-    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.AFFILIATE_MP.value, TypeOfChats.PARTNER_MP.value],
+    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.AFFILIATE_MP.value, TypeOfChats.PARTNER_MP.value, TypeOfChats.PARTNER_MT.value],
 
     TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA_MT.value, TypeOfChats.MEDIA_MP.value]
 }
