@@ -34,7 +34,7 @@ class ChatRepository(MyDataBase):
 
     def unspecified_chats(self):
         query = (
-            "SELECT * FROM `chats` WHERE  creo = 0 AND google = 0 AND fb = 0 AND console = 0 AND apps = 0 AND pp_web = 0 AND  pp_ads = 0 AND media = 0 AND agency_google = 0 AND agency_fb = 0;")
+            "SELECT * FROM `chats` WHERE  creo = 0 AND shop_google = 0 AND shop_fb = 0 AND console = 0 AND apps = 0 AND affiliate_mp = 0 AND  partner_mp = 0 AND media_mt = 0 AND media_mp = 0 AND partner_mt = 0 AND agency_google = 0 AND agency_fb = 0;")
         return self._select(query)
 
     def update_chat_type(self, group_id, chat_type, available):

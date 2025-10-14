@@ -15,13 +15,15 @@ class TypeOfChats(Enum):
     AGENCY_FB = "agency_fb"
     AGENCY_GOOGLE = "agency_google"
     APPS = "apps"
-    GOOGLE = "google"
-    FB = "fb"
+    SHOP_GOOGLE = "shop_google"
+    SHOP_FB = "shop_fb"
     CONSOLE = "console"
     CREO = "creo"
-    PP_WEB = "pp_web"
-    PP_ADS = "pp_ads"
-    MEDIA = "media"
+    AFFILIATE_MP = "affiliate_mp"
+    PARTNER_MP = "partner_mp"
+    MEDIA_MT = "media_mt"
+    MEDIA_MP = "media_mp"
+    PARTNER_MT = "partner_mt"
     ALL = "all"
 
 
@@ -34,13 +36,15 @@ access_admin_to_chat = {
         TypeOfChats.AGENCY_FB.value,
         TypeOfChats.AGENCY_GOOGLE.value,
         TypeOfChats.APPS.value,
-        TypeOfChats.GOOGLE.value,
-        TypeOfChats.FB.value,
+        TypeOfChats.SHOP_GOOGLE.value,
+        TypeOfChats.SHOP_FB.value,
         TypeOfChats.CONSOLE.value,
         TypeOfChats.CREO.value,
-        TypeOfChats.PP_WEB.value,
-        TypeOfChats.PP_ADS.value,
-        TypeOfChats.MEDIA.value,
+        TypeOfChats.AFFILIATE_MP.value,
+        TypeOfChats.PARTNER_MP.value,
+        TypeOfChats.MEDIA_MT.value,
+        TypeOfChats.MEDIA_MP.value,
+        TypeOfChats.PARTNER_MT.value,
         TypeOfChats.ALL.value,
     ],
 
@@ -49,14 +53,14 @@ access_admin_to_chat = {
     TypeOfAdmins.ADMIN_APPS.value: [TypeOfChats.APPS.value],
 
     TypeOfAdmins.ADMIN_ACCOUNTS.value: [
-        TypeOfChats.GOOGLE.value,
-        TypeOfChats.FB.value,
+        TypeOfChats.SHOP_GOOGLE.value,
+        TypeOfChats.SHOP_FB.value,
         TypeOfChats.CONSOLE.value
     ],
 
     TypeOfAdmins.ADMIN_CREO.value: [TypeOfChats.CREO.value],
 
-    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.PP_WEB.value, TypeOfChats.PP_ADS.value],
+    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.AFFILIATE_MP.value, TypeOfChats.PARTNER_MP.value],
 
-    TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA.value]
+    TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA_MT.value, TypeOfChats.MEDIA_MP.value]
 }

@@ -9,7 +9,7 @@ router = Router()
 
 
 @router.message(
-    Command("agency_fb", "agency_google", "apps", "google", "fb", "creo", "console", "pp_web", "pp_ads", "media"))
+    Command("agency_fb", "agency_google", "apps", "google", "shop_fb", "creo", "console", "affiliate_mp", "partner_mp", "media_mt", "media_mp", "partner_mt"))
 async def update_chat(message: Message, state: FSMContext):
     chat_type = message.text.split(' ')[0].replace("/", "")
     chat_type = chat_type.split("@")[0] if chat_type.__contains__("@") else chat_type
