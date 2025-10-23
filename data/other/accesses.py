@@ -5,10 +5,11 @@ class TypeOfAdmins(Enum):
     ADMIN = "ADMIN"
     ADMIN_AGENCY = "ADMIN_AGENCY"
     ADMIN_APPS = "ADMIN_APPS"
-    ADMIN_ACCOUNTS = "ADMIN_ACCOUNT"
+    ADMIN_SHOP = "ADMIN_SHOP"
     ADMIN_CREO = "ADMIN_CREO"
-    ADMIN_PP = "ADMIN_PP"
     ADMIN_MEDIA = "ADMIN_MEDIA"
+    ADMIN_MP = "ADMIN_MP"
+    ADMIN_MT = "ADMIN_MT"
 
 
 class TypeOfChats(Enum):
@@ -52,7 +53,7 @@ access_admin_to_chat = {
 
     TypeOfAdmins.ADMIN_APPS.value: [TypeOfChats.APPS.value],
 
-    TypeOfAdmins.ADMIN_ACCOUNTS.value: [
+    TypeOfAdmins.ADMIN_SHOP.value: [
         TypeOfChats.SHOP_GOOGLE.value,
         TypeOfChats.SHOP_FB.value,
         TypeOfChats.CONSOLE.value
@@ -60,7 +61,9 @@ access_admin_to_chat = {
 
     TypeOfAdmins.ADMIN_CREO.value: [TypeOfChats.CREO.value],
 
-    TypeOfAdmins.ADMIN_PP.value: [TypeOfChats.AFFILIATE_MP.value, TypeOfChats.PARTNER_MP.value, TypeOfChats.PARTNER_MT.value],
+    TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA_MT.value, TypeOfChats.MEDIA_MP.value],
 
-    TypeOfAdmins.ADMIN_MEDIA.value: [TypeOfChats.MEDIA_MT.value, TypeOfChats.MEDIA_MP.value]
+    TypeOfAdmins.ADMIN_MP.value: [TypeOfChats.AFFILIATE_MP.value, TypeOfChats.PARTNER_MP.value],
+
+    TypeOfAdmins.ADMIN_MT.value: [TypeOfChats.PARTNER_MT.value],
 }
