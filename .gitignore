@@ -3,3 +3,6 @@
 __pycache__/
 venv/
 private_cfg.py
+.env
+team_group_db.sql
+.claudeignore

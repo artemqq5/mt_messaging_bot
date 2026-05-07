@@ -1,0 +1,40 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: artemqq5/team-group-bot:latest
+
+# black ./app
+# autoflake --check --remove-all-unused-imports --recursive --in-place app --exclude=venv
+# isort ./app --check --diff
+# autoflake --remove-all-unused-imports --recursive --in-place app --exclude=venv
+# isort ./app --diff
+# flake8 ./app
+# pylint ./app
+# bandit -r ./app --exclude .\venv

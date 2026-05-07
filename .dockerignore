@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.git/
+.dockerignore
+Dockerfile
+*.log
+.idea/
+.vscode/
+.env
+private_cfg.py
